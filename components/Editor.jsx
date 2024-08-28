@@ -16,7 +16,7 @@ export default function Editor({ noteText, setTempNoteText }) {
     <section className="pane editor">
       <ReactMde
         value={noteText}
-        onChange={(text) => setTempNoteText(text)}
+        onChange={setTempNoteText}
         selectedTab={selectedTab}
         onTabChange={setSelectedTab}
         generateMarkdownPreview={(markdown) =>

@@ -13,6 +13,7 @@ export default function App() {
   const currentNote =
     notes.find((note) => note.id === currentNoteId) || notes[0];
 
+  /*-- Update state to reflect successful changed in db --*/
   useEffect(() => {
     const unsubscribe = onSnapshot(notesCOllection, (snapshot) => {
       // sync data from the database
@@ -27,6 +28,7 @@ export default function App() {
 
     return unsubscribe;
   }, []);
+  /*-----------------------------------------------*/
 
   useEffect(() => {
     if (!currentNoteId) {
@@ -38,6 +40,17 @@ export default function App() {
     if (currentNote) setTempNoteText(currentNote.body);
   }, [currentNote]);
 
+  /*---------- DEBOUNCING LOGIC ----------*/
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      if (tempNoteText !== currentNote.body) updateNote(tempNoteText);
+    }, 500);
+
+    return () => clearTimeout(timeOutId);
+  }, [tempNoteText]);
+  /*-----------------------------------------------*/
+
+  /*--- DB UPDATE LOGIC ---*/
   async function createNewNote() {
     const newNote = {
       createdAt: Date.now(),
@@ -62,6 +75,7 @@ export default function App() {
     const noteRef = doc(db, "notes", noteId);
     await deleteDoc(noteRef);
   }
+  /*-----------------------------------------------*/
 
   return (
     <main>
